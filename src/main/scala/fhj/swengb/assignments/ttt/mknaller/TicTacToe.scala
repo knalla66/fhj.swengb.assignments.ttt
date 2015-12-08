@@ -98,9 +98,9 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     * |---|---|---|
     * | x | o | x |
     * |---|---|---|
-    * | x | o | x |
+    * | o | x | x |
     * |---|---|---|
-    * | x | o | x |
+    * | x | o | o |
     * |---|---|---|
     *
     *
