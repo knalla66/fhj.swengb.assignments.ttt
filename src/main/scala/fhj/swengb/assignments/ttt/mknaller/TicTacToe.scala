@@ -67,6 +67,7 @@ object TicTacToe {
 
   /**
     * For a given tic tac toe game, this function applies all moves to the game.
+    * The first element of the sequence is also the first move.
     *
     * @param t
     * @param moves
@@ -113,7 +114,7 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * The game is over if either of a player wins or there is a draw.
     */
-  val gameOver = ???
+  val gameOver : Boolean = ???
 
   /**
     * the moves which are still to be played on this tic tac toe.
