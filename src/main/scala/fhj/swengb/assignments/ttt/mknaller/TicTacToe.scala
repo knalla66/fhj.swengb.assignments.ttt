@@ -1,5 +1,7 @@
 package fhj.swengb.assignments.ttt.mknaller
 
+import fhj.swengb.assignments.ttt.mknaller
+
 import scala.collection.Set
 
 /**
@@ -63,7 +65,7 @@ object TicTacToe {
     * creates an empty tic tac toe game
     * @return
     */
-  def apply(): TicTacToe = ???
+  def apply(): TicTacToe = TicTacToe()
 
   /**
     * For a given tic tac toe game, this function applies all moves to the game.
@@ -107,19 +109,36 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * @return
     */
-  def asString(): String = ???
+  def asString(): String = {
+
+    val topl = if (moveHistory.contains(TopLeft) && nextPlayer == PlayerA)  "x"  else " "
+    val topc = if (moveHistory.contains(TopCenter) && nextPlayer == PlayerA)  "x"  else " "
+    val topr = if (moveHistory.contains(TopRight) && nextPlayer == PlayerA)  "x"  else " "
+    val midl = if (moveHistory.contains(MiddleLeft) && nextPlayer == PlayerA)  "x"  else " "
+    val midc = if (moveHistory.contains(MiddleCenter) && nextPlayer == PlayerA)  "x"  else " "
+    val midr = if (moveHistory.contains(MiddleRight) && nextPlayer == PlayerA)  "x"  else " "
+    val botl = if (moveHistory.contains(BottomLeft) && nextPlayer == PlayerA)  "x"  else " "
+    val botc = if (moveHistory.contains(BottomCenter) && nextPlayer == PlayerA)  "x"  else " "
+    val botr = if (moveHistory.contains(BottomRight) && nextPlayer == PlayerA)  "x"  else " "
+
+
+    "|---|---|---|\n"+ "| "+topl+" | "+topc+" | "+topr+" |\n|---|---|---|\n"+ "| "+midl+" | "+midc+" | "+midr+" |\n|---|---|---|\n"+ "| "+botl+" | "+botc+" | "+botr+" |\n|---|---|---|"
+
+  }
+
 
   /**
     * is true if the game is over.
     *
     * The game is over if either of a player wins or there is a draw.
     */
-  val gameOver : Boolean = ???
+//  val gameOver : Boolean = ???
 
   /**
     * the moves which are still to be played on this tic tac toe.
     */
-  val remainingMoves: Set[TMove] = ???
+  val remainingMoves: Set[TMove] = Set(TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight)
+  // alle die nicht mehr gebraucht werden können dann ja immer gedroppt werden.
 
   /**
     * given a tic tac toe game, this function returns all
