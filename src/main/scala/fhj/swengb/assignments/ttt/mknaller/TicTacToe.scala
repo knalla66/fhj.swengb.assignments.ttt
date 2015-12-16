@@ -63,24 +63,20 @@ object TicTacToe {
 
   def main (args: Array[String]){
 
-
+    // test history
     val history:Map[TMove, Player] = Map()
     println(TicTacToe.apply(history).asString())
-
+    // test history 2
     val shistory:Map[TMove, Player] = Map(TopLeft->PlayerA, TopRight ->PlayerB)
     println(TicTacToe.apply(shistory).asString())
-
-    for ((m, p) <- shistory) if (p==PlayerA) println("x") else println("o")
-
-    //println(TicTacToe.apply(shistory).turn(MiddleLeft,PlayerA).turn(BottomCenter, PlayerB).turn(MiddleCenter, PlayerA).asString())
-    println(TicTacToe.apply().turn(MiddleLeft,PlayerA).turn(BottomCenter, PlayerB).turn(MiddleCenter, PlayerA).asString())
-
+    // test
+    for ((m, p) <- shistory) if (p==PlayerA) println("x") else if (p==PlayerB) println("o") else print("nix")
 
     // erstellen eines testfields
 
     val testfield = TicTacToe.apply().turn(MiddleLeft,PlayerA).turn(BottomLeft,PlayerB).turn(MiddleCenter, PlayerA).turn(BottomRight, PlayerB)
-      .turn(BottomCenter, PlayerA).turn(MiddleRight, PlayerB)
-
+      .turn(BottomCenter, PlayerA).turn(TopRight, PlayerB).turn(MiddleRight, PlayerA).turn(BottomLeft, PlayerB).turn(MiddleRight, PlayerA)
+    print(testfield.asString())
     println(testfield.moveHistory)
 
     // test output
@@ -88,6 +84,19 @@ object TicTacToe {
     println("REmainingmoves: " + testfield.remainingMoves)
     println("REmainingmoves size: " + testfield.remainingMoves.size)
     println("Remainingmoves position: " + testfield.moveHistory.keySet)
+    //println("REmainingmoves: " + testTicTacToe.remainingMoves)
+    //println("REmainingmoves size: " + testTicTacToe.remainingMoves.size)
+
+    val playerAMoves = testfield.moveHistory.filter(_._2 == PlayerA).keySet
+    println("Player A moves: " + playerAMoves)
+    val playerBMoves = testfield.moveHistory.filter(_._2 == PlayerB).keySet
+    println("Player B moves: " + playerBMoves)
+
+    println("Winner: " + testfield.winner.get._1)
+    println("Winning Moves: " + testfield.winner.get._2)
+    println("GameOver: " + testfield.gameOver)
+
+
 
   }
 
@@ -140,6 +149,7 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     * @return
     */
 /*
+  // else if not working - making a match/case function
   def asString(): String = {
 
     val topl = if (moveHistory.contains(TopLeft) && nextPlayer == PlayerA)  "x"  else if (moveHistory.contains(TopLeft) && nextPlayer == PlayerB) "o" else " "
@@ -181,14 +191,22 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * The game is over if either of a player wins or there is a draw.
     */
-//  val gameOver : Boolean = ???
+
+  val gameOver : Boolean = {
+    if (winner != None) true
+    else false
+  }
 
   /**
     * the moves which are still to be played on this tic tac toe.
     */
   val allMoves: Set[TMove] = Set(TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight)
   val remainingMoves: Set[TMove] = allMoves.diff(moveHistory.keySet)
-  // alle die nicht mehr gebraucht werden können dann ja immer gedroppt werden.
+  // alle die nicht mehr gebraucht werden können dann ja immer gedroppt werden. (difference von moveHistory)
+
+  // direkt in winner inkludiert
+  //val playerAMoves = moveHistory.filter(_._2 == PlayerA).keySet
+  //val playerBMoves = moveHistory.filter(_._2 == PlayerB).keySet
 
   /**
     * given a tic tac toe game, this function returns all
@@ -202,7 +220,27 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * The set of moves contains all moves which contributed to the result.
     */
-  def winner: Option[(Player, Set[TMove])] = ???
+  def winner: Option[(Player, Set[TMove])] = {
+
+    // alle 8 Gewinnmöglichkeiten
+    def checkIfWon(pMoves: Set[TMove]): Boolean = pMoves match {
+      case topRow if topRow.contains(TopLeft) && topRow.contains(TopCenter) && topRow.contains(TopRight) => true
+      case middleRow if middleRow.contains(MiddleLeft) && middleRow.contains(MiddleCenter) && middleRow.contains(MiddleRight) => true
+      case bottomRow if bottomRow.contains(BottomLeft) && bottomRow.contains(BottomCenter) && bottomRow.contains(BottomRight) => true
+      case leftCol if leftCol.contains(TopLeft) && leftCol.contains(MiddleLeft) && leftCol.contains(BottomLeft) => true
+      case middleCol if middleCol.contains(TopCenter) && middleCol.contains(MiddleCenter) && middleCol.contains(BottomCenter) => true
+      case rightCol if rightCol.contains(TopRight) && rightCol.contains(MiddleRight) && rightCol.contains(BottomRight) => true
+      case diagonal1 if diagonal1.contains(TopLeft) && diagonal1.contains(MiddleCenter) && diagonal1.contains(BottomRight) => true
+      case diagonal2 if diagonal2.contains(TopRight) && diagonal2.contains(MiddleCenter) && diagonal2.contains(BottomLeft) => true
+      case _ => false
+    }
+    // der Spieler und seine Züge werden zurückgegeben - weil Option: gibt es Some oder None
+    if (checkIfWon(moveHistory.filter(_._2 == PlayerA).keySet))
+      Some(PlayerA, moveHistory.filter(_._2 == PlayerA).keySet)
+    else if (checkIfWon(moveHistory.filter(_._2 == PlayerB).keySet))
+      Some(PlayerB, moveHistory.filter(_._2 == PlayerB).keySet)
+    else None
+  }
 
   /**
     * returns a copy of the current game, but with the move applied to the tic tac toe game.
@@ -220,7 +258,6 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
         TicTacToe(moveHistory + (p -> player), PlayerB)
       else player.equals(PlayerB)
         TicTacToe(moveHistory + (p -> player), PlayerA)
-
     }
     // wenn der Player schon gesetzt hat und nochmals drückt
     else {
