@@ -95,7 +95,7 @@ object TicTacToe {
     println("Winner: " + testfield.winner.get._1)
     println("Winning Moves: " + testfield.winner.get._2)
     println("GameOver: " + testfield.gameOver)
-
+    if(testfield.remainingMoves == 0 ) println("This is a DRAW!") else println("no Draw!")
 
 
   }
