@@ -72,6 +72,7 @@ class TicTacToeController extends Initializable {
   }
 
 }
+}
 
 
 
